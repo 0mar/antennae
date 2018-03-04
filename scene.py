@@ -20,7 +20,7 @@ class Scene:
         self.counter = 0
         self.total_ants = 0
         self.nest_node = 0
-        self.food_node = 1
+        self.food_node = -1
         self.size = None
         self.params = None
         self.graph = None
@@ -51,8 +51,19 @@ class Scene:
         self.ant_position_array = np.zeros([self.total_ants, 2])
         self.ant_position_array[:] = self.node_position_array[self.nest_node]
 
+    def create_random_configuration(self):
+        return np.random.rand(self.params.num_nodes, 2) * self.size
+
+    def create_cellular_configuration(self):
+        n = int(math.sqrt(self.params.num_nodes))
+        range = np.linspace(0, 1, n)
+        x, y = np.meshgrid(range, range)
+        return np.hstack([x.flatten()[:, None], y.flatten()[:, None]]) * self.size
+
+
     def _create_graph(self):
-        self.node_position_array = np.random.rand(self.params.num_ants, 2) * self.size
+        self.node_position_array = self.create_cellular_configuration()
+        self.food_node = len(self.node_position_array) - 1
 
         def distance(a, b):
             return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
@@ -69,10 +80,11 @@ class Scene:
                 for n1, n2 in itertools.combinations(range(len(nodes)), 2):
                     if np.random.random() < degree:
                         dist = distance(nodes[n1], nodes[n2])
-                        graph.add_edge(n1, n2, weight=dist)
-                if nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node):
+                        graph.add_edge(n1, n2, weight=dist, pheromone=1)
+                try:
+                    _ = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node)
                     path_exists = True
-                else:
+                except nx.exception.NetworkXNoPath:
                     graph.remove_edges_from(graph.edges())
 
         self.graph = nx.Graph()
@@ -97,6 +109,8 @@ class Scene:
         """
         for ant in self.ant_list:
             ant.walk(self.params.dt)
+        for n1, n2 in self.graph.edges_iter():
+            self.graph[n1][n2]['pheromone'] *= self.params.pheromone_decay ** self.params.dt
 
     def step(self):
         """

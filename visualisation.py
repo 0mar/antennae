@@ -128,8 +128,8 @@ class VisualScene:
         """
         self.canvas.delete('all')
         self.canvas.create_image(0, 0, image=self.env, anchor=tkinter.NW, tags="IMG")
-        self.draw_ants()
         self.draw_nodes_and_edges()
+        self.draw_ants()
 
     def store_scene(self, _, filename=None):
         """
@@ -191,7 +191,8 @@ class VisualScene:
         centers = (start_pos_array + end_pos_array) / 2
         for n1, n2 in itertools.combinations(range(len(centers)), 2):
             if self.scene.graph.has_edge(n1, n2):
-                self.canvas.create_line(centers[n1, 0], centers[n1, 1], centers[n2, 0], centers[n2, 1])
+                self.canvas.create_line(centers[n1, 0], centers[n1, 1], centers[n2, 0], centers[n2, 1],
+                                        width=self.scene.graph[n1][n2]['pheromone'])
 
     def get_visual_node_coordinates(self):
         """
