@@ -1,7 +1,6 @@
 import numpy as np
 import math
 import networkx as nx
-import matplotlib.pyplot as plt
 import itertools
 from ant import Ant
 
@@ -62,7 +61,7 @@ class Scene:
 
 
     def _create_graph(self):
-        self.node_position_array = self.create_cellular_configuration()
+        self.node_position_array = self.create_random_configuration()
         self.food_node = len(self.node_position_array) - 1
 
         def distance(a, b):
@@ -93,6 +92,9 @@ class Scene:
 
     @staticmethod
     def plot_graph(graph, positions, interactive=False):
+        import matplotlib
+        matplotlib.use('tkAgg')
+        import matplotlib.pyplot as plt
         pos_dict = {}
         for node in graph.nodes():
             pos_dict[node] = positions[node, :]
@@ -109,7 +111,7 @@ class Scene:
         """
         for ant in self.ant_list:
             ant.walk(self.params.dt)
-        for n1, n2 in self.graph.edges_iter():
+        for n1, n2 in self.graph.edges():
             self.graph[n1][n2]['pheromone'] *= self.params.pheromone_decay ** self.params.dt
 
     def step(self):
