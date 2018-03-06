@@ -26,7 +26,12 @@ class Simulation:
         self.scene = Scene()
 
     def _prepare(self):
-        self.add_ants(self.params.num_ants)
+        """
+        Register parameters and modules
+
+        :return: None
+        """
+        self.scene.total_ants += self.params.num_ants
         self.on_step_functions.append(self.scene.step)
         self.vis = VisualScene(self.scene)
         self.on_step_functions.append(self.vis.loop)
@@ -54,9 +59,6 @@ class Simulation:
         self.scene.counter += 1
         [step() for step in self.on_step_functions]
 
-    def add_ants(self, num):
-        self.scene.total_ants += num
-
     def set_params(self, params):
         """
         Set the parameters with the given object.
@@ -69,5 +71,4 @@ class Simulation:
 
 if __name__ == '__main__':
     sim = Simulation()
-    sim.add_ants(10)
     sim.start()

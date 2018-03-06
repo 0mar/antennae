@@ -175,6 +175,12 @@ class VisualScene:
         return start_pos_array, end_pos_array
 
     def draw_nodes_and_edges(self):
+        """
+        Method for drawing the nodes and edges of the graph that represents the environment
+
+        The thickness of the line represents the amount of pheromone currently on that edge
+        :return:
+        """
         # Nodes
         start_pos_array, end_pos_array = self.get_visual_node_coordinates()
         for node in self.scene.graph.nodes():

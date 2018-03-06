@@ -10,18 +10,19 @@ class Ant:
         self.scene = scene
         self.graph = None
         self.index = i
-        self.speed = 1
+        self.is_back_tracing = False
+        self.back_trace_list = []
         self.from_node = None
         self.to_node = None
         self.edge = None
         self.process_on_edge = 0
         self._has_food = False
         self.color = 'brown'
+        # Some parameters that should probably be in params.py
+        self.speed = 1
         self.no_turn_back = True
         self.deposit_on = Ant.WAY_BACK
         self.back_trace = True
-        self.is_back_tracing = False
-        self.back_trace_list = []
 
     def prepare(self):
         self.speed = self.scene.params.ant_speed
@@ -31,6 +32,12 @@ class Ant:
         self.pick_new_edge()
 
     def walk(self, dt):
+        """
+        The actions an ant takes on each time step
+
+        :param dt: size of time step
+        :return: None
+        """
         progress = dt * self.speed
         self.process_on_edge += progress / self.edge['weight']
         self.position = self._compute_position()
@@ -48,10 +55,20 @@ class Ant:
             self.pick_new_edge()
 
     def _compute_position(self):
+        """
+        Compute position on the edge. The process along the edge is given by self.process_on_edge
+        :return:
+        """
         edge_vector = self.scene.node_position_array[self.to_node] - self.scene.node_position_array[self.from_node]
         return edge_vector * self.process_on_edge + self.scene.node_position_array[self.from_node]
 
     def deposit_pheromone(self):
+        """
+        Deposit the pheromone.
+        To make sure that short edges are preferred, pheromone addition is divided by the length of the edge.
+
+        :return:
+        """
         addition = self.scene.params.pheromone_deposit * self.scene.params.dt / self.edge['weight']
         self.edge['pheromone'] += addition
 
@@ -62,6 +79,17 @@ class Ant:
         return self.to_node == self.scene.food_node
 
     def pick_new_edge(self):
+        """
+        How to pick a new edge.
+        Currently, the probability of picking an edge is proportional to the amount of pheromone on that edge
+        where all probabilities (of course) sum to one.
+
+        Additionally, ants have a preference for not turning back on the edge
+        they just came from (people actually researched that, so I guess it's valid), unless they have no other choice.
+
+        If an and just found food, it'll take the exact same path back to the nest, ignoring any loops it made.
+        :return:
+        """
         prev_node = self.from_node
         if self.back_trace and not self.is_back_tracing:
             self.back_trace_list.append(self.from_node)
@@ -100,6 +128,11 @@ class Ant:
 
     @property
     def has_food(self):
+        """
+        Boolean that indicates whether the ant is currently carrying food
+
+        :return: True if ant has food, false otherwise
+        """
         return self._has_food
 
     @has_food.setter
