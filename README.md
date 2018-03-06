@@ -4,7 +4,7 @@ Python implementation of pheromone-based routing of ants.
 ## Requirements
 This module is written in Python 3. External dependencies are 
 * NumPy
-* NetworkX
+* NetworkX (2.0 or later)
 * Matplotlib (optional)
 
 ## Running
@@ -24,7 +24,7 @@ In spite of their limited sensory and deductive capabilities, they are able to f
 
 Basically, as soon as an ant finds a source of food, he returns to the nest and marks his path with a chemical that the other ants can interpret as a guide towards the food. When more ants go looking for this food, they try to follow the pheromone and if they are succesful, they return as well, leaving a trail of their own. 
 
-Meanwhile, the pheromone trails slowly decay. This results in the shorter paths being more popular than the longer ones, and over time the colony discovers the optimal route to the food.
+Meanwhile, the pheromone trails slowly decay. This results in the shorter paths being more popular than the longer ones, and over time the colony discovers the optimal route towards the food.
 
 ## What is happening?
 
@@ -33,6 +33,9 @@ Subsequently, all ants are released from the nest node and move randomly through
 At each node, an ant chooses a random direction based on the amount of pheromone present on each of the edges.
 Initially, all edges carry the same amount of pheromone. But when an ant reaches the food node, they backtrace their path towards the nest node, leaving a trail of pheromone along the edges they pass.
 When the ants return to the nest node, they dump the food, forget about their trip, and try to find the food node again, guided by the pheromone trails.
+
+The visualisation shows the ant as circles (orange if they carry food, brown if they don't) traversing the network. The nest node is shown in red, the food node in yellow.
+The thickness of the lines represents the pheromone on those edges. Over time, the shortest path should be showing the thickest lines and the most ants traversing it.
 
 ## Who thought of this?
 
