@@ -44,7 +44,7 @@ class Ant:
             elif self.is_at_nest() and self.has_food:
                 self.has_food = False
                 self.is_back_tracing = False
-                self.back_trace_list = []
+                self.back_trace_list = [self.scene.nest_node]
             self.pick_new_edge()
 
     def _compute_position(self):
@@ -67,7 +67,9 @@ class Ant:
             self.back_trace_list.append(self.from_node)
         self.from_node = self.to_node
         if self.has_food and self.back_trace and self.is_back_tracing:
-            self.to_node = self.back_trace_list.pop()
+            self.to_node = self.back_trace_list[-1]
+            first_occurrence = self.back_trace_list.index(self.to_node)
+            self.back_trace_list = self.back_trace_list[:first_occurrence]
         else:
             sub_graph_copy = self.graph[self.from_node].copy()
             if self.no_turn_back and len(sub_graph_copy) > 1 and not (self.is_at_food() or self.is_at_nest()):
