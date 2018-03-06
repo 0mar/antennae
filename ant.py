@@ -19,6 +19,9 @@ class Ant:
         self.color = 'brown'
         self.no_turn_back = True
         self.deposit_on = Ant.WAY_BACK
+        self.back_trace = True
+        self.is_back_tracing = False
+        self.back_trace_list = []
 
     def prepare(self):
         self.speed = self.scene.params.ant_speed
@@ -34,10 +37,14 @@ class Ant:
         if self.has_food:
             self.deposit_pheromone()
         if self.process_on_edge > 1:
-            if self.is_at_food():
+            if self.is_at_food() and not self.has_food:
                 self.has_food = True
-            elif self.is_at_nest():
+                self.is_back_tracing = True
+                self.back_trace_list.append(self.from_node)
+            elif self.is_at_nest() and self.has_food:
                 self.has_food = False
+                self.is_back_tracing = False
+                self.back_trace_list = []
             self.pick_new_edge()
 
     def _compute_position(self):
@@ -56,14 +63,19 @@ class Ant:
 
     def pick_new_edge(self):
         prev_node = self.from_node
+        if self.back_trace and not self.is_back_tracing:
+            self.back_trace_list.append(self.from_node)
         self.from_node = self.to_node
-        sub_graph_copy = self.graph[self.from_node].copy()
-        if self.no_turn_back and len(sub_graph_copy)>1 and not (self.is_at_food() or self.is_at_nest()):
-            sub_graph_copy.pop(prev_node,None)
-        to_nodes = list(sub_graph_copy)
-        pheromones = np.array([edge['pheromone'] for edge in sub_graph_copy.values()]) + 0.001
-        pheromones /= sum(pheromones)
-        self.to_node = np.random.choice(to_nodes, p=pheromones)
+        if self.has_food and self.back_trace and self.is_back_tracing:
+            self.to_node = self.back_trace_list.pop()
+        else:
+            sub_graph_copy = self.graph[self.from_node].copy()
+            if self.no_turn_back and len(sub_graph_copy) > 1 and not (self.is_at_food() or self.is_at_nest()):
+                sub_graph_copy.pop(prev_node, None)
+            to_nodes = list(sub_graph_copy)
+            pheromones = np.array([edge['pheromone'] for edge in sub_graph_copy.values()]) + 0.001
+            pheromones /= sum(pheromones)
+            self.to_node = np.random.choice(to_nodes, p=pheromones)
         self.edge = self.graph[self.from_node][self.to_node]
         self.process_on_edge = 0
 

@@ -53,15 +53,18 @@ class Scene:
     def create_random_configuration(self):
         return np.random.rand(self.params.num_nodes, 2) * self.size
 
-    def create_cellular_configuration(self):
+    def create_cellular_configuration(self, eps=0.05):
         n = int(math.sqrt(self.params.num_nodes))
-        range = np.linspace(0, 1, n)
-        x, y = np.meshgrid(range, range)
-        return np.hstack([x.flatten()[:, None], y.flatten()[:, None]]) * self.size
-
+        range_ = np.linspace(0 + eps, 1 - eps, n)
+        x, y = np.meshgrid(range_, range_)
+        return (np.hstack([x.flatten()[:, None], y.flatten()[:, None]]) + eps * (
+                    np.random.random([n ** 2, 2]) - 0.5)) * self.size
 
     def _create_graph(self):
-        self.node_position_array = self.create_random_configuration()
+        if self.params.random_nodes:
+            self.node_position_array = self.create_random_configuration()
+        else:
+            self.node_position_array = self.create_cellular_configuration()
         self.food_node = len(self.node_position_array) - 1
 
         def distance(a, b):
@@ -72,7 +75,9 @@ class Scene:
             for i in range(len(nodes)):
                 graph.add_node(i)
 
-        def create_edges(graph, positions, degree=0.2):
+        def create_edges(graph, positions, degree=None):
+            if not degree:
+                degree = self.params.connectiveness
             nodes = list(positions)
             path_exists = False
             while not path_exists:
