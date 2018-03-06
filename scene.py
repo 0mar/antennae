@@ -86,8 +86,11 @@ class Scene:
                         dist = distance(nodes[n1], nodes[n2])
                         graph.add_edge(n1, n2, weight=dist, pheromone=1)
                 try:
-                    _ = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node)
-                    path_exists = True
+                    path = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node)
+                    if len(path[1]) > self.params.min_path_length:
+                        path_exists = True
+                    else:
+                        graph.remove_edges_from(graph.edges())
                 except nx.exception.NetworkXNoPath:
                     graph.remove_edges_from(graph.edges())
 
