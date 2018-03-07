@@ -90,9 +90,11 @@ class Scene:
                     if len(path[1]) > self.params.min_path_length:
                         path_exists = True
                     else:
-                        graph.remove_edges_from(graph.edges())
+                        g = list(graph.edges())
+                        graph.remove_edges_from(g)
                 except nx.exception.NetworkXNoPath:
-                    graph.remove_edges_from(graph.edges())
+                    g = list(graph.edges())
+                    graph.remove_edges_from(g)
 
         self.graph = nx.Graph()
         create_nodes(self.graph, self.node_position_array)
