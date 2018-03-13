@@ -77,7 +77,7 @@ class Scene:
 
         def create_edges(graph, positions, degree=None):
             if not degree:
-                degree = self.params.connectiveness
+                degree = self.params.edge_probability
             nodes = list(positions)
             path_exists = False
             while not path_exists:

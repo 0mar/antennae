@@ -1,7 +1,7 @@
 class Parameters:
     def __init__(self):
         # Degree two arbitrary nodes are connected by an edge
-        self.connectiveness = 0.1
+        self.edge_probability = 0.1
         # Number of ants
         self.num_ants = 50
         # Number of nodes. If random_nodes == true, this is adjusted to floor(sqrt(num_nodes))**2

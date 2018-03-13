@@ -29,12 +29,12 @@ class Ant:
         Register parameters and modules
 
         :return: None
+        """
         self.speed = self.scene.params.ant_speed
         self.graph = self.scene.graph
         self.to_node = self.scene.nest_node
         self.from_node = self.scene.nest_node
         self.pick_new_edge()
-        """
 
     def walk(self, dt):
         """
