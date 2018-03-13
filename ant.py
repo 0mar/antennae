@@ -25,11 +25,16 @@ class Ant:
         self.back_trace = True
 
     def prepare(self):
+        """
+        Register parameters and modules
+
+        :return: None
         self.speed = self.scene.params.ant_speed
         self.graph = self.scene.graph
         self.to_node = self.scene.nest_node
         self.from_node = self.scene.nest_node
         self.pick_new_edge()
+        """
 
     def walk(self, dt):
         """
@@ -57,6 +62,7 @@ class Ant:
     def _compute_position(self):
         """
         Compute position on the edge. The process along the edge is given by self.process_on_edge
+
         :return:
         """
         edge_vector = self.scene.node_position_array[self.to_node] - self.scene.node_position_array[self.from_node]
@@ -65,7 +71,7 @@ class Ant:
     def deposit_pheromone(self):
         """
         Deposit the pheromone.
-        To make sure that short edges are preferred, pheromone addition is divided by the length of the edge.
+        To make sure edges are not biased on length, pheromone addition is divided by the length of the edge.
 
         :return:
         """

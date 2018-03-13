@@ -122,7 +122,7 @@ class Scene:
         for ant in self.ant_list:
             ant.walk(self.params.dt)
         for n1, n2 in self.graph.edges():
-            self.graph[n1][n2]['pheromone'] *= self.params.pheromone_decay ** self.params.dt
+            self.graph[n1][n2]['pheromone'] *= (1 - self.params.pheromone_decay) ** self.params.dt
 
     def step(self):
         """
