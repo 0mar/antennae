@@ -39,4 +39,4 @@ The thickness of the lines represents the pheromone on those edges. Over time, t
 
 ## Who thought of this?
 
-Not me. There is a lot of research done in this area, check for instance [here](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.161.9541&rep=rep1&type=pdf), or [here](http://faculty.washington.edu/paymana/swarm/colorni92-ecal.pdf), or [here](http://ieeexplore.ieee.org/document/484436/). 
+Not me. There is a lot of research done in this area, check for instance [here](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.161.9541&rep=rep1&type=pdf), or [here](http://faculty.washington.edu/paymana/swarm/colorni92-ecal.pdf), or [here](http://ieeexplore.ieee.org/document/484436/). But [my](http://symbols.hotell.kau.se) research is slightly related, and I like experimenting with these types of models. Also, my buddy Lloyd wrote a nice essay about swarm intelligence which inspired this little project.
