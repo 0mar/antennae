@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from params import Parameters
 from scene import Scene
 from visualisation import VisualScene

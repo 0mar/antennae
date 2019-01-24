@@ -58,7 +58,7 @@ class Scene:
         range_ = np.linspace(0 + eps, 1 - eps, n)
         x, y = np.meshgrid(range_, range_)
         return (np.hstack([x.flatten()[:, None], y.flatten()[:, None]]) + eps * (
-                    np.random.random([n ** 2, 2]) - 0.5)) * self.size
+                np.random.random([n ** 2, 2]) - 0.5)) * self.size
 
     def _create_graph(self):
         if self.params.random_nodes:
@@ -90,11 +90,9 @@ class Scene:
                     if len(path[1]) > self.params.min_path_length:
                         path_exists = True
                     else:
-                        g = list(graph.edges())
-                        graph.remove_edges_from(g)
+                        graph.remove_edges_from(list(graph.edges()))
                 except nx.exception.NetworkXNoPath:
-                    g = list(graph.edges())
-                    graph.remove_edges_from(g)
+                    graph.remove_edges_from(list(graph.edges()))
 
         self.graph = nx.Graph()
         create_nodes(self.graph, self.node_position_array)
