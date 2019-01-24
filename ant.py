@@ -136,7 +136,7 @@ class Ant:
         return self._has_food
 
     @has_food.setter
-    def has_food(self,boolean):
+    def has_food(self, boolean):
         self._has_food = boolean
         if boolean:
             self.color = 'orange'

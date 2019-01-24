@@ -12,4 +12,4 @@ class Parameters:
         self.size = [2, 2]
         self.dt = 0.01
         self.random_nodes = False
-        self.min_path_length = 4  # Set to high (around 4) to allow only conplex graphs
+        self.min_path_length = 2  # Set to high (around 4) to allow only conplex graphs
