@@ -1,7 +1,7 @@
 import tkinter
 import itertools
 import numpy as np
-
+import math
 
 class VisualScene:
     """
@@ -198,7 +198,8 @@ class VisualScene:
         for n1, n2 in itertools.combinations(range(len(centers)), 2):
             if self.scene.graph.has_edge(n1, n2):
                 self.canvas.create_line(centers[n1, 0], centers[n1, 1], centers[n2, 0], centers[n2, 1],
-                                        width=self.scene.graph[n1][n2]['pheromone'])
+                                        width=math.log(1+self.scene.graph[n1][n2]['pheromone']),
+                                        fill=self.pheromone_to_color(self.scene.graph[n1][n2]['pheromone']))
 
     def get_visual_node_coordinates(self):
         """
@@ -208,7 +209,7 @@ class VisualScene:
         """
         rel_pos_array = self.scene.node_position_array / self.scene.size
         rel_size_array = np.ones(
-            self.scene.node_position_array.shape) * 0.1 / self.scene.size * self.size
+            self.scene.node_position_array.shape) * 0.02 / self.scene.size * self.size
         vis_pos_array = np.hstack((rel_pos_array[:, 0][:, None], 1 - rel_pos_array[:, 1][:, None])) * self.size
         start_pos_array = vis_pos_array - 0.5 * rel_size_array
         end_pos_array = vis_pos_array + 0.5 * rel_size_array
@@ -248,3 +249,8 @@ class VisualScene:
         :return: a Size with the coordinates of screen
         """
         return [coord[0], 1 - coord[1]] * self.size
+
+    def pheromone_to_color(self,pheromone):
+        frac_val = 1-1/(1+pheromone)
+        colors = (int(frac_val*255*0.9),int(frac_val*255*0.7),0)
+        return "#%02x%02x%02x"%colors

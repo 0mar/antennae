@@ -20,7 +20,7 @@ class Scene:
         self.total_ants = 0
         self.nest_node = 0
         self.food_node = -1
-        self.size = None
+        self.size = np.array([1,1])
         self.params = None
         self.graph = None
 
@@ -44,7 +44,6 @@ class Scene:
         :return: None
         """
         self.params = params
-        self.size = np.array(self.params.size)
         self._create_graph()
         self._create_colony()
         self.ant_position_array = np.zeros([self.total_ants, 2])
@@ -61,14 +60,25 @@ class Scene:
                 np.random.random([n ** 2, 2]) - 0.5)) * self.size
 
     def _create_graph(self):
-        if self.params.random_nodes:
-            self.node_position_array = self.create_random_configuration()
-        else:
-            self.node_position_array = self.create_cellular_configuration()
-        self.food_node = len(self.node_position_array) - 1
-
         def distance(a, b):
             return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+        if self.params.random_nodes:
+            self.graph = nx.random_geometric_graph(self.params.num_nodes, 1/8)
+            pos = nx.get_node_attributes(self.graph, 'pos')
+            self.node_position_array = np.array(list(pos.values()))
+            self.nest_node = np.argmin(np.linalg.norm(self.node_position_array-self.size/2,axis=1))
+            nx.set_node_attributes(self.graph,pos,'pos')
+            self.food_node = len(self.node_position_array) - 1
+
+            for edge in self.graph.edges():
+                i, j = edge
+                self.graph[i][j]['weight'] = distance(pos[i], pos[j])
+                self.graph[i][j]['pheromone'] = 0.1
+            return
+        else:
+            self.node_position_array = self.create_cellular_configuration()
+
+
 
         def create_nodes(graph, positions):
             nodes = list(positions)
@@ -84,7 +94,7 @@ class Scene:
                 for n1, n2 in itertools.combinations(range(len(nodes)), 2):
                     if np.random.random() < degree:
                         dist = distance(nodes[n1], nodes[n2])
-                        graph.add_edge(n1, n2, weight=dist, pheromone=1)
+                        graph.add_edge(n1, n2, weight=dist, pheromone=.1)
                 try:
                     path = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node)
                     if len(path[1]) > self.params.min_path_length:
