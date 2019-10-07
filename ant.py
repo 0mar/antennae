@@ -30,7 +30,7 @@ class Ant:
         :return: None
         """
         if self.scene.params.seed:
-            np.random.seed(self.scene.params.seed)
+            np.random.seed(self.index)  # deterministic but different
         self.speed = self.scene.params.ant_speed
         self.graph = self.scene.graph
         self.to_node = self.scene.nest_node
@@ -84,7 +84,7 @@ class Ant:
         return self.to_node == self.scene.nest_node
 
     def is_at_food(self):
-        return self.to_node == self.scene.food_node
+        return self.to_node in self.scene.food_nodes
 
     def pick_new_edge(self):
         """
@@ -111,7 +111,7 @@ class Ant:
             if self.no_turn_back and len(sub_graph_copy) > 1 and not (self.is_at_food() or self.is_at_nest()):
                 sub_graph_copy.pop(prev_node, None)
             to_nodes = list(sub_graph_copy)
-            pheromones = np.array([edge['pheromone'] for edge in sub_graph_copy.values()]) + 0.001
+            pheromones = np.array([edge['pheromone'] for edge in sub_graph_copy.values()]) + 0.1
             pheromones /= sum(pheromones)
             self.to_node = np.random.choice(to_nodes, p=pheromones)
         self.edge = self.graph[self.from_node][self.to_node]

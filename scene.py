@@ -22,7 +22,7 @@ class Scene:
         self.counter = 0
         self.total_ants = 0
         self.nest_node = 0
-        self.food_node = -1
+        self.food_nodes = [-1]
         self.size = np.array([1, 1])
         self.params = None
         self.graph = None
@@ -79,11 +79,14 @@ class Scene:
                 difficulty = 0.1
                 len_param = int(len(pos) * difficulty)
                 self.nest_node = np.argmin(np.linalg.norm(self.node_position_array - self.size / 2, axis=1))
-                self.food_node = np.argmax(
-                    np.linalg.norm(self.node_position_array[:len_param, :] - self.size / 2, axis=1))
+                if len(self.food_nodes) > 1:
+                    self.food_nodes = [random.randint(0, len(pos) - 1) for _ in self.food_nodes]
+                else:
+                    self.food_nodes = [np.argmax(
+                        np.linalg.norm(self.node_position_array[:len_param, :] - self.size / 2, axis=1))]
                 try:
-                    path = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node)
-                    if self.nest_node != self.food_node:
+                    path = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_nodes[0])
+                    if self.nest_node not in self.food_nodes:
                         path_exists = True
                 except:
                     path_exists = False
@@ -113,7 +116,7 @@ class Scene:
                         dist = distance(nodes[n1], nodes[n2])
                         graph.add_edge(n1, n2, weight=dist, pheromone=.1)
                 try:
-                    path = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node)
+                    path = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_nodes[0])
                     if len(path[1]) > self.params.min_path_length:
                         path_exists = True
                     else:

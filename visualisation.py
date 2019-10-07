@@ -187,7 +187,7 @@ class VisualScene:
         for node in self.scene.graph.nodes():
             if node == self.scene.nest_node:
                 color = 'red'
-            elif node == self.scene.food_node:
+            elif node in self.scene.food_nodes:
                 color = 'yellow'
             else:
                 color = 'blue'

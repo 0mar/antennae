@@ -9,9 +9,9 @@ class Parameters:
         # Movement speed of ant
         self.ant_speed = 1
         # Decay rate (per second) : (1 - exponential growth rate)
-        self.pheromone_decay = 0.9
+        self.pheromone_decay = 0.8
         # Deposit rate (per second)
-        self.pheromone_deposit = 2
+        self.pheromone_deposit = 3
         # Size of the animation window
         self.screen_size_x, self.screen_size_y = 1000, 1000
         # Extra animation delay. On mac, keep around 10 or higher, otherwise window won't close
@@ -23,4 +23,4 @@ class Parameters:
         # Minimal number of edges between food and nest node.
         self.min_path_length = 4
         # Seed for reproducing simulations
-        self.seed = 884
+        self.seed = 12
