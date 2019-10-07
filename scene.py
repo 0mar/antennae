@@ -1,7 +1,10 @@
-import numpy as np
-import math
-import networkx as nx
 import itertools
+import math
+import random
+
+import networkx as nx
+import numpy as np
+
 from ant import Ant
 
 
@@ -20,7 +23,7 @@ class Scene:
         self.total_ants = 0
         self.nest_node = 0
         self.food_node = -1
-        self.size = np.array([1,1])
+        self.size = np.array([1, 1])
         self.params = None
         self.graph = None
 
@@ -44,6 +47,8 @@ class Scene:
         :return: None
         """
         self.params = params
+        if self.params.seed:
+            random.seed(self.params.seed)
         self._create_graph()
         self._create_colony()
         self.ant_position_array = np.zeros([self.total_ants, 2])
@@ -62,13 +67,27 @@ class Scene:
     def _create_graph(self):
         def distance(a, b):
             return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+
         if self.params.random_nodes:
-            self.graph = nx.random_geometric_graph(self.params.num_nodes, 1/8)
-            pos = nx.get_node_attributes(self.graph, 'pos')
-            self.node_position_array = np.array(list(pos.values()))
-            self.nest_node = np.argmin(np.linalg.norm(self.node_position_array-self.size/2,axis=1))
-            nx.set_node_attributes(self.graph,pos,'pos')
-            self.food_node = len(self.node_position_array) - 1
+            path_exists = False
+            while not path_exists:
+                connectivity = 1.75
+                self.graph = nx.random_geometric_graph(self.params.num_nodes,
+                                                       connectivity / math.sqrt(self.params.num_nodes))
+                pos = nx.get_node_attributes(self.graph, 'pos')
+                self.node_position_array = np.array(list(pos.values()))
+                difficulty = 0.1
+                len_param = int(len(pos) * difficulty)
+                self.nest_node = np.argmin(np.linalg.norm(self.node_position_array - self.size / 2, axis=1))
+                self.food_node = np.argmax(
+                    np.linalg.norm(self.node_position_array[:len_param, :] - self.size / 2, axis=1))
+                try:
+                    path = nx.bidirectional_dijkstra(self.graph, self.nest_node, self.food_node)
+                    if self.nest_node != self.food_node:
+                        path_exists = True
+                except:
+                    path_exists = False
+            nx.set_node_attributes(self.graph, pos, 'pos')
 
             for edge in self.graph.edges():
                 i, j = edge
@@ -77,8 +96,6 @@ class Scene:
             return
         else:
             self.node_position_array = self.create_cellular_configuration()
-
-
 
         def create_nodes(graph, positions):
             nodes = list(positions)

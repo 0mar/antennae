@@ -4,7 +4,6 @@ from params import Parameters
 from scene import Scene
 from visualisation import VisualScene
 
-
 class Simulation:
     """
     The simulation class controls all the components of the simulation.

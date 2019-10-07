@@ -1,7 +1,8 @@
-import tkinter
 import itertools
+import tkinter
+
 import numpy as np
-import math
+
 
 class VisualScene:
     """
@@ -198,7 +199,8 @@ class VisualScene:
         for n1, n2 in itertools.combinations(range(len(centers)), 2):
             if self.scene.graph.has_edge(n1, n2):
                 self.canvas.create_line(centers[n1, 0], centers[n1, 1], centers[n2, 0], centers[n2, 1],
-                                        width=math.log(1+self.scene.graph[n1][n2]['pheromone']),
+                                        # width=math.log(1+4*self.scene.graph[n1][n2]['pheromone']),
+                                        width=self.scene.graph[n1][n2]['pheromone'],
                                         fill=self.pheromone_to_color(self.scene.graph[n1][n2]['pheromone']))
 
     def get_visual_node_coordinates(self):

@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 
 class Ant:
@@ -30,6 +29,8 @@ class Ant:
 
         :return: None
         """
+        if self.scene.params.seed:
+            np.random.seed(self.scene.params.seed)
         self.speed = self.scene.params.ant_speed
         self.graph = self.scene.graph
         self.to_node = self.scene.nest_node
@@ -76,6 +77,7 @@ class Ant:
         :return:
         """
         addition = self.scene.params.pheromone_deposit * self.scene.params.dt / self.edge['weight']
+        # addition = self.scene.params.pheromone_deposit * self.scene.params.dt * np.sqrt(self.scene.params.num_ants)
         self.edge['pheromone'] += addition
 
     def is_at_nest(self):
