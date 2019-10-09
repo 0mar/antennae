@@ -200,7 +200,7 @@ class VisualScene:
             if self.scene.graph.has_edge(n1, n2):
                 self.canvas.create_line(centers[n1, 0], centers[n1, 1], centers[n2, 0], centers[n2, 1],
                                         # width=math.log(1+4*self.scene.graph[n1][n2]['pheromone']),
-                                        width=self.scene.graph[n1][n2]['pheromone'],
+                                        width=self.scene.graph[n1][n2]['pheromone']/2,
                                         fill=self.pheromone_to_color(self.scene.graph[n1][n2]['pheromone']))
 
     def get_visual_node_coordinates(self):

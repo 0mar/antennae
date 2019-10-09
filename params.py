@@ -3,7 +3,7 @@ class Parameters:
         # Number of ants
         self.num_ants = 300
         # Number of nodes.
-        self.num_nodes = 200
+        self.num_nodes = 20
         # (drawing) size of the ant
         self.ant_size = 0.007
         # Movement speed of ant
@@ -23,4 +23,4 @@ class Parameters:
         # Minimal number of edges between food and nest node.
         self.min_path_length = 4
         # Seed for reproducing simulations
-        self.seed = 12
+        self.seed = 22
