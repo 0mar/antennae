@@ -3,6 +3,8 @@
 from params import Parameters
 from scene import Scene
 from visualisation import VisualScene
+import argparse
+
 
 class Simulation:
     """
@@ -71,5 +73,9 @@ class Simulation:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Run an ant colony network')
+    parser.add_argument('-n','--nodes', type=int, help='Number of nodes in the network', default=20)
+    args = parser.parse_args()
     sim = Simulation()
+    sim.params.num_nodes = args.nodes
     sim.start()
