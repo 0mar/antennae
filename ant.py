@@ -95,7 +95,7 @@ class Ant:
         Additionally, ants have a preference for not turning back on the edge
         they just came from (people actually researched that, so I guess it's valid), unless they have no other choice.
 
-        If an and just found food, it'll take the exact same path back to the nest, ignoring any loops it made.
+        If an ant just found food, it'll take the exact same path back to the nest, ignoring any loops it made.
         :return:
         """
         prev_node = self.from_node
@@ -120,7 +120,8 @@ class Ant:
     @property
     def position(self):
         """
-        Position getter. Similar to velocity
+        Obtain current position of the ant.
+
         :return: Current position
         """
         return self.scene.ant_position_array[self.index]
@@ -128,7 +129,9 @@ class Ant:
     @position.setter
     def position(self, arr):
         """
-        Position setter. This is not a safe operation; there is no check if the position is occupied.
+        Position setter. This is not a safe operation; 
+        there is no check if the position corresponds to a point on the graph.
+        
         :param arr: New position
         :return: None
         """
