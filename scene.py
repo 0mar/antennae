@@ -10,7 +10,7 @@ from ant import Ant
 
 class Scene:
     """
-    Models a scene. A scene is a rectangular object with obstacles and ants inside.
+    Models a scene. A scene is the environment in which the path graph and the ants are contained.
     """
 
     def __init__(self):
